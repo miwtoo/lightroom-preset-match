@@ -1,5 +1,15 @@
 # Progress
 
+## 2026-01-26: Test: E2E export download flow (.xmp)
+
+### Task completed
+- Created `e2e/export-download.spec.ts` with two scenarios
+- Scenario 1: valid preset name triggers .xmp download and shows iPad import guidance
+- Scenario 2: invalid preset name blocks download and shows validation error
+- In-test image upload via base64 buffer (no committed fixture)
+- All E2E tests pass (3 total: smoke + 2 export-download)
+- Full gate passes (test + typecheck + build + e2e)
+
 ## 2026-01-26: Export to XMP with iPad import workflow
 
 ### Task completed
