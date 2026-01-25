@@ -7,8 +7,12 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "test": "bun test",
-    "gate": "bun test && bun run typecheck && bun run build",
+    "test": "bun test lib",
+    "gate": "bun run test && bun run typecheck && bun run build",
+    "gate:full": "bun run gate && bun run e2e",
+    "e2e": "playwright test",
+    "e2e:ui": "playwright test --ui",
+    "e2e:headed": "playwright test --headed",
     "prepare": "husky"
   },
   "dependencies": {
@@ -18,6 +22,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "3",
+    "@playwright/test": "^1.58.0",
     "@types/node": "20",
     "@types/react": "19",
     "@types/react-dom": "19",
