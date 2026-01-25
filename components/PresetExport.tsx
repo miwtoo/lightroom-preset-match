@@ -1,18 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-
-interface PresetAdjustments {
-  exposure: number
-  contrast: number
-  highlights: number
-  shadows: number
-  whites: number
-  blacks: number
-  hue: { [key: string]: number }
-  saturation: { [key: string]: number }
-  luminance: { [key: string]: number }
-}
+import type { PresetAdjustments } from '@/lib/preset-generator'
+import { downloadPresetXMP, generatePresetXMP } from '@/lib/preset-export'
 
 interface PresetExportProps {
   presetName: string
@@ -20,6 +10,8 @@ interface PresetExportProps {
   adjustments: PresetAdjustments
   intensity: number
 }
+
+const VALID_CHARS = /^[A-Za-z0-9\s._-]*$/
 
 export default function PresetExport({
   presetName,
@@ -30,57 +22,30 @@ export default function PresetExport({
   const [showInstructions, setShowInstructions] = useState(false)
   const [validationError, setValidationError] = useState('')
 
-  const handleExport = () => {
-    if (!presetName.trim()) {
-      setValidationError('Please enter a preset name')
-      return
-    }
+  const validateName = (name: string): string => {
+    if (!name.trim()) return 'Please enter a preset name'
+    if (name.length > 100) return 'Preset name must be less than 100 characters'
+    if (!VALID_CHARS.test(name)) return 'Use only letters, numbers, spaces, -, _, .'
+    return ''
+  }
 
-    if (presetName.length > 100) {
-      setValidationError('Preset name must be less than 100 characters')
+  const handleExport = () => {
+    const error = validateName(presetName)
+    if (error) {
+      setValidationError(error)
       return
     }
 
     setValidationError('')
 
-    const factor = intensity / 100
-    const scaledAdjustments = {
-      exposure: adjustments.exposure * factor,
-      contrast: adjustments.contrast * factor,
-      highlights: adjustments.highlights * factor,
-      shadows: adjustments.shadows * factor,
-      whites: adjustments.whites * factor,
-      blacks: adjustments.blacks * factor,
-    }
-
-    const xmlContent = `<?xml version="1.0" encoding="UTF-8"?>
-<preset name="${presetName}">
-  <adjustments>
-    <exposure>${scaledAdjustments.exposure}</exposure>
-    <contrast>${scaledAdjustments.contrast}</contrast>
-    <highlights>${scaledAdjustments.highlights}</highlights>
-    <shadows>${scaledAdjustments.shadows}</shadows>
-    <whites>${scaledAdjustments.whites}</whites>
-    <blacks>${scaledAdjustments.blacks}</blacks>
-  </adjustments>
-</preset>`
-
-    const blob = new Blob([xmlContent], { type: 'application/xml' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `${presetName.replace(/\s+/g, '-')}.lrtemplate`
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
-
+    const xmp = generatePresetXMP(adjustments, presetName)
+    downloadPresetXMP(xmp, presetName)
     setShowInstructions(true)
   }
 
   return (
     <div className="border rounded-lg p-6 bg-white">
-      <h2 className="text-xl font-semibold mb-4">Export Preset</h2>
+      <h2 className="text-xl font-semibold mb-4">Export Preset (.xmp)</h2>
 
       <div className="mb-4">
         <label htmlFor="presetName" className="block text-sm font-medium mb-2">
@@ -102,19 +67,27 @@ export default function PresetExport({
         onClick={handleExport}
         className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 w-full"
       >
-        Download Preset
+        Download .xmp Preset
       </button>
 
       {showInstructions && (
         <div className="mt-6 p-4 bg-blue-50 rounded-lg">
           <h3 className="font-semibold mb-2">How to Import on iPad</h3>
           <ol className="list-decimal list-inside space-y-2 text-sm">
-            <li>Open Lightroom on your iPad</li>
-            <li>Go to Presets panel (bottom-right)</li>
-            <li>Tap the + icon to add new preset</li>
-            <li>Choose "Import Presets"</li>
-            <li>Select the downloaded .lrtemplate file</li>
+            <li>Open Lightroom on iPad and open any photo</li>
+            <li>Tap <strong>Presets</strong></li>
+            <li>Tap <strong>Yours</strong></li>
+            <li>Tap the <strong>...</strong> menu</li>
+            <li>Choose <strong>Import Presets</strong></li>
+            <li>In Files, select the downloaded .xmp file</li>
           </ol>
+          <h4 className="font-semibold mt-4 mb-2 text-sm">Troubleshooting</h4>
+          <ul className="list-disc list-inside space-y-1 text-xs">
+            <li><strong>Import Presets missing?</strong> Open a photo first, then check Presets. Update Lightroom if needed.</li>
+            <li><strong>File not found in Files?</strong> Save to Files or check Downloads folder in picker.</li>
+            <li><strong>Preset not visible?</strong> Check Presets → Yours (may be under User Presets).</li>
+            <li><strong>Partially compatible?</strong> Enable partially compatible presets in Lightroom settings.</li>
+          </ul>
           <p className="text-xs text-gray-600 mt-4">
             Note: This is an approximate preset. Fine-tune adjustments in Lightroom for best results.
           </p>

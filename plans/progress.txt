@@ -1,0 +1,38 @@
+# Progress
+
+## 2026-01-26: Export to XMP with iPad import workflow
+
+### Task completed
+- Replaced `.lrtemplate`/custom XML export with deterministic `.xmp` export (Camera Raw Settings, Basic + HSL only)
+- Updated `lib/preset-export.ts` with XMP serialization, XML escaping, safe filename handling, and stable UUID generation
+- Updated `lib/preset-generator.ts` to support typed HSL channels and extend `scaleAdjustments` to scale HSL maps
+- Updated `components/PresetExport.tsx` to use library export functions, validate names (char set), and show `.xmp` import guidance + troubleshooting
+- Updated `components/PresetPreview.tsx` and `app/page.tsx` to import `PresetAdjustments` from lib (single source of truth)
+- Updated `README.md` with iPad import workflow, supported formats/devices, privacy statement, and troubleshooting sections
+- Updated unit tests in `lib/preset-export.test.ts` for XMP structure, XML escaping, determinism, formatting, and UUID stability
+- Created `plans/progress.txt` for tracking progress
+
+### Key decisions made
+- Export artifact: single `.xmp` (Camera Raw Settings preset), Basic (PV2012) + HSL only
+- No iPadOS/Lightroom version claims; wording: "requires Lightroom iPad that supports importing XMP presets"
+- Preset name validation: A-Z a-z 0-9 space - _ . only
+- Determinism: stable tag ordering, stable numeric formatting (+ for positive values), content-derived UUID
+
+### Files changed
+- `lib/preset-export.ts`: Complete rewrite for XMP export
+- `lib/preset-generator.ts`: Added typed HSL channels and `scaleMap` helper
+- `components/PresetExport.tsx`: Updated to use library functions and `.xmp` workflow
+- `components/PresetPreview.tsx`: Import type from lib
+- `app/page.tsx`: Import type from lib
+- `components/ImageUpload.tsx`: Export ImageData type
+- `README.md`: Updated with iPad workflow and troubleshooting
+- `lib/preset-export.test.ts`: Rewrote tests for XMP functions
+- `plans/progress.txt`: Created
+
+### Unresolved questions
+- None (export format and workflow are now defined)
+
+### Notes for next iteration
+- Manual verification on iPad Safari for download + Lightroom import
+- Consider adding `.zip` wrapper for batch import if requested later
+- ImageUpload error handling improvements (currently console.error, could add to UI)

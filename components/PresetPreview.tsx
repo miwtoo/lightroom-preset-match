@@ -1,24 +1,13 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import type { PresetAdjustments } from '@/lib/preset-generator'
 
 interface ImageData {
   src: string
   file: File
   width: number
   height: number
-}
-
-interface PresetAdjustments {
-  exposure: number
-  contrast: number
-  highlights: number
-  shadows: number
-  whites: number
-  blacks: number
-  hue: { [key: string]: number }
-  saturation: { [key: string]: number }
-  luminance: { [key: string]: number }
 }
 
 interface PresetPreviewProps {

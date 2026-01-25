@@ -14,6 +14,8 @@ interface ImageUploadProps {
   onError: (error: string) => void
 }
 
+export type { ImageData }
+
 export default function ImageUpload({ onImageUpload, onError }: ImageUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [isDragging, setIsDragging] = useState(false)

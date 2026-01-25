@@ -1,3 +1,7 @@
+const HSL_CHANNELS = ['Red', 'Orange', 'Yellow', 'Green', 'Aqua', 'Blue', 'Purple', 'Magenta'] as const
+
+export type HslChannel = (typeof HSL_CHANNELS)[number]
+
 export interface PresetAdjustments {
   exposure: number
   contrast: number
@@ -5,9 +9,9 @@ export interface PresetAdjustments {
   shadows: number
   whites: number
   blacks: number
-  hue: { [key: string]: number }
-  saturation: { [key: string]: number }
-  luminance: { [key: string]: number }
+  hue: Partial<Record<HslChannel, number>>
+  saturation: Partial<Record<HslChannel, number>>
+  luminance: Partial<Record<HslChannel, number>>
 }
 
 export function generatePresetFromImage(
@@ -26,6 +30,19 @@ export function generatePresetFromImage(
   }
 }
 
+function scaleMap(
+  map: Partial<Record<HslChannel, number>>,
+  factor: number
+): Partial<Record<HslChannel, number>> {
+  const result: Partial<Record<HslChannel, number>> = {}
+  for (const channel of HSL_CHANNELS) {
+    if (map[channel] !== undefined) {
+      result[channel] = map[channel]! * factor
+    }
+  }
+  return result
+}
+
 export function scaleAdjustments(
   adjustments: PresetAdjustments,
   intensity: number
@@ -39,5 +56,8 @@ export function scaleAdjustments(
     shadows: adjustments.shadows * factor,
     whites: adjustments.whites * factor,
     blacks: adjustments.blacks * factor,
+    hue: scaleMap(adjustments.hue, factor),
+    saturation: scaleMap(adjustments.saturation, factor),
+    luminance: scaleMap(adjustments.luminance, factor),
   }
 }
