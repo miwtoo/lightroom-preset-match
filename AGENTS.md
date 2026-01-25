@@ -8,11 +8,12 @@
 
 ## Commands
 
-- Install: `bun install`
+- Install: `bun install` (also runs `husky prepare` to install git hooks)
 - Dev: `bun dev`
 - Build: `bun run build`
 - Typecheck: `bun run typecheck`
 - Tests: `bun test`
+- Gate: `bun run gate` (runs tests + typecheck + build)
 
 ## Required Skills
 
@@ -34,7 +35,7 @@
 ## Quality Gates
 
 - Project should always have test coverage.
-- After changes, always run the sanity check: `bun test`, `bun run build`, `bun run typecheck`.
+- Quality gates enforced via Husky `pre-commit` hook: runs `bun run gate` (tests + typecheck + build) before each commit.
 - When starting implementation, use Behaviour-Driven Development (BDD) style and Playwright tests. Reference: https://cucumber.io/docs/bdd/.
 
 ## Notes
