@@ -1,0 +1,45 @@
+name: Feature request
+description: Suggest a new capability or improvement.
+title: "Feature: "
+labels: ["enhancement"]
+body:
+  - type: checkboxes
+    attributes:
+      label: Pre-check
+      options:
+        - label: I searched existing issues and did not find a duplicate request.
+          required: true
+  - type: textarea
+    attributes:
+      label: Problem statement
+      description: What problem does this solve and for whom?
+      placeholder: "As a user, I want ... so that ..."
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Proposed solution
+      description: What should the app do?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Success criteria
+      description: How to know this is done (user-visible behavior).
+      placeholder: |
+        - Given ..., when ..., then ...
+        - Works on ...
+    validations:
+      required: true
+  - type: dropdown
+    attributes:
+      label: Impact
+      description: How big is the impact if this is implemented?
+      options:
+        - Low
+        - Medium
+        - High
+        - Critical
+  - type: textarea
+    attributes:
+      label: Alternatives considered

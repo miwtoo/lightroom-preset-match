@@ -1,0 +1,20 @@
+name: Documentation
+description: Report missing/incorrect docs.
+title: "Docs: "
+labels: ["documentation"]
+body:
+  - type: input
+    attributes:
+      label: Location
+      description: Link to the section/file/page that needs changes.
+      placeholder: README section / file path / URL
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: What's wrong or missing?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Suggested change

@@ -1,0 +1,58 @@
+name: Bug report
+description: Report something broken or incorrect.
+title: "Bug: "
+labels: ["bug"]
+body:
+  - type: checkboxes
+    attributes:
+      label: Pre-check
+      options:
+        - label: I searched existing issues and did not find a duplicate.
+          required: true
+  - type: textarea
+    attributes:
+      label: What happened?
+      description: Clear description of the problem.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Go to ...
+        2. Upload ...
+        3. Click ...
+        4. Observe ...
+    validations:
+      required: true
+  - type: dropdown
+    attributes:
+      label: Reproducibility
+      description: How often does this happen?
+      options:
+        - Always
+        - Often
+        - Sometimes
+        - Rarely
+        - Not sure
+  - type: textarea
+    attributes:
+      label: Environment
+      description: Browser + version, OS/device, and whether this was local (`bun dev`) or deployed.
+      render: text
+      placeholder: |
+        Browser:
+        OS / Device:
+        Local or deployed:
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Console output / logs
+      description: Paste text logs if available (avoid screenshots of logs).
+      render: shell

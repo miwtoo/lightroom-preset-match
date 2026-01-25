@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Readme / usage
+    url: https://github.com/miwtoo/lightroom-preset-match#readme
+    about: Quick start, usage, and known limitations.
