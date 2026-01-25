@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "test": "bun test"
+    "test": "bun test",
+    "gate": "bun test && bun run typecheck && bun run build",
+    "prepare": "husky"
   },
   "dependencies": {
     "next": "16.1.1",
@@ -15,16 +17,17 @@
     "react-dom": "19.2.3"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "3",
     "@types/node": "20",
     "@types/react": "19",
     "@types/react-dom": "19",
+    "autoprefixer": "10",
     "bun-types": "latest",
-    "typescript": "5",
     "eslint": "9",
     "eslint-config-next": "16.1.1",
-    "@eslint/eslintrc": "3",
-    "tailwindcss": "3.4.17",
+    "husky": "^9.1.7",
     "postcss": "8",
-    "autoprefixer": "10"
+    "tailwindcss": "3.4.17",
+    "typescript": "5"
   }
 }
