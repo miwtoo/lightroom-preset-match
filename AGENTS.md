@@ -19,10 +19,7 @@
 
 - `nextjs` for App Router + static export patterns
 - `playwright` for BDD-style E2E tests
-
-## Skill Installation
-
-- Use skill-discovery to install: `nextjs` and `playwright` (`webapp-testing`).
+- Use skill-discovery to find appropriate skills when needed
 
 ## Locations
 
