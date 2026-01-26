@@ -1,4 +1,4 @@
-import { PresetAdjustments, type HslChannel } from './preset-generator'
+import { PresetAdjustments, scaleAdjustments, type HslChannel } from './preset-generator'
 
 const HSL_CHANNELS = ['Red', 'Orange', 'Yellow', 'Green', 'Aqua', 'Blue', 'Purple', 'Magenta'] as const
 
@@ -122,6 +122,15 @@ export function generatePresetXMP(
  </rdf:RDF>
 </x:xmpmeta>
 <?xpacket end="w"?>`
+}
+
+export function generatePresetXMPWithIntensity(
+  adjustments: PresetAdjustments,
+  presetName: string,
+  intensity: number
+): string {
+  const scaled = scaleAdjustments(adjustments, intensity)
+  return generatePresetXMP(scaled, presetName)
 }
 
 export function downloadPresetXMP(xmp: string, presetName: string): void {

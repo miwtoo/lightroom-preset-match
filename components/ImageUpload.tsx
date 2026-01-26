@@ -66,14 +66,7 @@ export default function ImageUpload({ onImageUpload, onError }: ImageUploadProps
   }
 
   return (
-    <div
-      className={`border-2 border-dashed rounded-lg p-12 text-center transition-colors ${
-        isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'
-      }`}
-      onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}
-      onDrop={handleDrop}
-    >
+    <div className="w-full">
       <input
         type="file"
         ref={inputRef}
@@ -82,15 +75,20 @@ export default function ImageUpload({ onImageUpload, onError }: ImageUploadProps
         className="hidden"
         aria-label="Upload image"
       />
-      <p className="text-gray-600 mb-4">Drag and drop an image here, or</p>
       <button
         type="button"
+        className={`upload-zone p-6 text-center w-full ${isDragging ? 'upload-zone--active' : ''}`}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
         onClick={() => inputRef.current?.click()}
-        className="px-6 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900"
       >
-        Choose File
+        <p className="text-sm text-[var(--muted)]">Drag and drop an image here, or</p>
+        <span className="inline-flex button-ghost px-5 py-2 mt-4 text-[11px] tracking-[0.2em]">
+          Choose File
+        </span>
+        <p className="text-xs text-[var(--muted)] mt-3">Supports JPEG, PNG, WebP</p>
       </button>
-      <p className="text-sm text-gray-500 mt-4">Supports JPEG, PNG, WebP</p>
     </div>
   )
 }

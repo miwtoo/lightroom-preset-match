@@ -15,7 +15,7 @@ test('smoke: home page loads and renders main heading', async ({ page }) => {
   })
 
   await test.step('And the subtitle is displayed', async () => {
-    const subtitle = page.getByText('Generate Lightroom presets from reference images')
+    const subtitle = page.getByText('Client-only preset workflow. No uploads.')
     await expect(subtitle).toBeVisible()
   })
 })

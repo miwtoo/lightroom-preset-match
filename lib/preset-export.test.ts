@@ -1,4 +1,4 @@
-import { generatePresetXMP } from './preset-export'
+import { generatePresetXMP, generatePresetXMPWithIntensity } from './preset-export'
 import type { PresetAdjustments } from './preset-generator'
 
 describe('generatePresetXMP', () => {
@@ -129,5 +129,28 @@ describe('generatePresetXMP', () => {
     expect(uuidMatch1).toBeDefined()
     expect(uuidMatch2).toBeDefined()
     expect(uuidMatch1).toBe(uuidMatch2)
+  })
+})
+
+describe('generatePresetXMPWithIntensity', () => {
+  it('should scale basic adjustments before export', () => {
+    const adjustments: PresetAdjustments = {
+      exposure: 0.4,
+      contrast: 20,
+      highlights: -10,
+      shadows: 10,
+      whites: 12,
+      blacks: -8,
+      hue: { Red: 6 },
+      saturation: { Orange: -4 },
+      luminance: { Blue: 10 },
+    }
+
+    const xmp = generatePresetXMPWithIntensity(adjustments, 'Scaled', 50)
+
+    expect(xmp).toContain('crs:Exposure2012="+0.20"')
+    expect(xmp).toContain('crs:Contrast2012="+10"')
+    expect(xmp).toContain('crs:Highlights2012="-5"')
+    expect(xmp).toContain('crs:HueAdjustmentRed="+3"')
   })
 })

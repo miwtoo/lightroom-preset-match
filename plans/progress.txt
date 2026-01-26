@@ -46,3 +46,52 @@
 - Manual verification on iPad Safari for download + Lightroom import
 - Consider adding `.zip` wrapper for batch import if requested later
 - ImageUpload error handling improvements (currently console.error, could add to UI)
+
+## 2026-01-26: UI: Editor-style shell (display-only panels)
+
+### Task completed
+- Implemented always-dark editor shell with 3-panel responsive layout
+- Added live histogram view, read-only tone/curve sections, and split preview styling
+- Added reference file card with basic file info and export panel styling
+- Added Playwright coverage for editor shell layout and file info
+
+### Key decisions made
+- Always-dark theme to match the provided mock
+- Split preview fixed at 50% for v1 (no draggable divider yet)
+- Histogram reflects before/after depending on generation state
+
+### Files changed
+- `app/globals.css`
+- `app/layout.tsx`
+- `app/page.tsx`
+- `components/Histogram.tsx`
+- `components/ImageUpload.tsx`
+- `components/PresetPreview.tsx`
+- `components/PresetExport.tsx`
+- `lib/histogram.ts`
+- `e2e/editor-shell.spec.ts`
+- `e2e/export-download.spec.ts`
+
+### Notes for next iteration
+- Add draggable split divider and connect intensity to export output
+
+## 2026-01-26: Preview intensity applies to export output
+
+### Task completed
+- Scaled preset export output by intensity before XMP generation
+- Added unit coverage for intensity-scaled export
+- Added Playwright coverage to verify intensity affects downloaded XMP
+
+### Key decisions made
+- Export now uses `scaleAdjustments` to keep preview and exported preset consistent
+- Demo adjustments set to non-zero values to enable verification in UI tests
+
+### Files changed
+- `lib/preset-export.ts`
+- `components/PresetExport.tsx`
+- `lib/preset-export.test.ts`
+- `app/page.tsx`
+- `e2e/export-download.spec.ts`
+
+### Notes for next iteration
+- Replace demo adjustments with real generation outputs
