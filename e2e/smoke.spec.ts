@@ -15,7 +15,7 @@ test('smoke: home page loads and renders main heading', async ({ page }) => {
   })
 
   await test.step('And the subtitle is displayed', async () => {
-    const subtitle = page.getByText('Client-only preset workflow. No uploads.')
+    const subtitle = page.getByText('Private client-side workflow. Images never leave your device.')
     await expect(subtitle).toBeVisible()
   })
 })

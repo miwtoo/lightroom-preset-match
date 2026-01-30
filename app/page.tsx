@@ -107,9 +107,20 @@ export default function Home() {
       <header className="flex flex-wrap items-center justify-between gap-4 mb-6">
         <div className="space-y-1">
           <h1 className="text-base uppercase tracking-[0.3em] font-semibold">Lightroom Preset Generator</h1>
-          <p className="text-xs text-[var(--muted)]">Client-only preset workflow. No uploads.</p>
+          <p className="text-xs text-[var(--muted)]">Private client-side workflow. Images never leave your device.</p>
         </div>
-        <div className="text-xs text-[var(--muted)]">v1 editor shell</div>
+        <div className="flex items-center gap-4">
+          {imageData && (
+            <button
+              type="button"
+              onClick={handleClear}
+              className="text-[10px] uppercase tracking-widest text-[var(--muted)] hover:text-white"
+            >
+              Clear Session
+            </button>
+          )}
+          <div className="text-xs text-[var(--muted)]">v1 editor shell</div>
+        </div>
       </header>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-[minmax(0,1fr)_320px] lg:grid-cols-[320px_minmax(0,1fr)_360px]">
@@ -364,6 +375,15 @@ export default function Home() {
               ) : (
                 <p className="text-xs text-[var(--muted)]">Upload a reference image to see file info.</p>
               )}
+            </div>
+
+            <div className="panel-divider my-2" />
+            <div className="space-y-2">
+              <span className="panel-title">Privacy</span>
+              <p className="text-[10px] leading-relaxed text-[var(--muted)]">
+                This application processes images entirely in your browser. No image data,
+                presets, or metadata are ever uploaded to a server.
+              </p>
             </div>
           </div>
         </section>

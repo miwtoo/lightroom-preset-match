@@ -156,6 +156,27 @@
 - `e2e/export-download.spec.ts`
 - `plans/progress.txt`
 
+## 2026-01-30: Feature: Privacy info and Clear Session
+
+### Task completed
+- Added prominent "Clear Session" button in the header
+- Added explicit in-UI privacy copy in the sidebar and header
+- Updated `handleClear` to reset all analysis and histogram states
+- Added E2E test for clear session functionality
+- Fixed race conditions and loop issues in `PresetPreview` by using `useCallback` and refactoring stats to upload pipeline
+- Updated smoke tests to reflect new UI copy
+- Full gate passes (unit + typecheck + build + E2E)
+
+### Key decisions made
+- Positioned "Clear Session" in the header for easy access while working
+- Clarified privacy wording to emphasize that processing is local and private
+
+### Files changed
+- `app/page.tsx`
+- `e2e/editor-shell.spec.ts`
+- `e2e/smoke.spec.ts`
+- `plans/progress.txt`
+
 ### Notes for next iteration
 - Implement tone zone (Z0–ZX) calculation and display (Issue #11)
 - Implement HSL Color Mixer panel (Issue #12)

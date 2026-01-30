@@ -75,3 +75,25 @@ test('editor shell: invalid file type shows error', async ({ page }) => {
     await expect(errorMsg).toHaveAttribute('role', 'alert')
   })
 })
+
+test('editor shell: clear session resets app state', async ({ page }) => {
+  await test.step('Given a reference image is uploaded', async () => {
+    await page.goto('/')
+    const buffer = Buffer.from(TINY_PNG_BASE64, 'base64')
+    await page.getByLabel('Upload image').setInputFiles({
+      name: 'ref.png',
+      mimeType: 'image/png',
+      buffer,
+    })
+    await expect(page.getByText('ref.png').first()).toBeVisible()
+  })
+
+  await test.step('When Clear Session is clicked', async () => {
+    await page.getByRole('button', { name: 'Clear Session', exact: true }).click()
+  })
+
+  await test.step('Then the app returns to the initial state', async () => {
+    await expect(page.getByText('ref.png')).not.toBeVisible()
+    await expect(page.getByLabel('Upload reference image')).toBeVisible()
+  })
+})
