@@ -93,5 +93,25 @@
 - `app/page.tsx`
 - `e2e/export-download.spec.ts`
 
+## 2026-01-30: Feature: Draggable preview divider and Reset Intensity
+
+### Task completed
+- Implemented draggable split divider in `PresetPreview` with mouse and touch support
+- Added state for `splitPosition` and cursor styling to the divider
+- Added an explicit "Reset" action for Intensity in the sidebar
+- Full gate passes (unit + typecheck + build + E2E)
+
+### Key decisions made
+- Used a floating handle styling for the divider to make it more discoverable
+- "Reset" button for intensity is conditionally shown only when adjustments exist and intensity is non-default
+- Used `window` event listeners for dragging to ensure a smooth experience even when the cursor leaves the preview frame
+
+### Files changed
+- `components/PresetPreview.tsx`
+- `app/page.tsx`
+- `app/globals.css`
+- `plans/progress.txt`
+
 ### Notes for next iteration
-- Replace demo adjustments with real generation outputs
+- Start on core generation pipeline (Issue #3) - mapping image stats to real adjustments
+- Improve `ImageUpload` with early downscaling (Issue #2)

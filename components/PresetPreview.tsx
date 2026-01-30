@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import type { PresetAdjustments } from '@/lib/preset-generator'
 import type { ImageData } from '@/components/ImageUpload'
 import { computeHistogram } from '@/lib/histogram'
@@ -33,7 +33,51 @@ export default function PresetPreview({
 }: PresetPreviewProps) {
   const beforeCanvasRef = useRef<HTMLCanvasElement>(null)
   const afterCanvasRef = useRef<HTMLCanvasElement>(null)
-  const splitPosition = 50
+  const [splitPosition, setSplitPosition] = useState(50)
+  const isDragging = useRef(false)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  const handleMove = useCallback((clientX: number) => {
+    if (!containerRef.current) return
+    const rect = containerRef.current.getBoundingClientRect()
+    const x = clientX - rect.left
+    const position = Math.max(0, Math.min(100, (x / rect.width) * 100))
+    setSplitPosition(position)
+  }, [])
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    isDragging.current = true
+    handleMove(e.clientX)
+  }
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    isDragging.current = true
+    handleMove(e.touches[0].clientX)
+  }
+
+  useEffect(() => {
+    const onMouseMove = (e: MouseEvent) => {
+      if (isDragging.current) handleMove(e.clientX)
+    }
+    const onTouchMove = (e: TouchEvent) => {
+      if (isDragging.current) handleMove(e.touches[0].clientX)
+    }
+    const onEnd = () => {
+      isDragging.current = false
+    }
+
+    window.addEventListener('mousemove', onMouseMove)
+    window.addEventListener('mouseup', onEnd)
+    window.addEventListener('touchmove', onTouchMove)
+    window.addEventListener('touchend', onEnd)
+
+    return () => {
+      window.removeEventListener('mousemove', onMouseMove)
+      window.removeEventListener('mouseup', onEnd)
+      window.removeEventListener('touchmove', onTouchMove)
+      window.removeEventListener('touchend', onEnd)
+    }
+  }, [handleMove])
 
   const safeAdjustments = adjustments ?? EMPTY_ADJUSTMENTS
 
@@ -94,8 +138,15 @@ export default function PresetPreview({
   }, [imageData.src, safeAdjustments, intensity, onHistogramUpdate])
 
   return (
-    <div className="preview-frame bg-[#0f0f0f]" role="img" aria-label="Before and after preview">
-      <div className="relative">
+    <div
+      ref={containerRef}
+      className="preview-frame bg-[#0f0f0f] cursor-crosshair select-none touch-none"
+      role="img"
+      aria-label="Before and after preview"
+      onMouseDown={handleMouseDown}
+      onTouchStart={handleTouchStart}
+    >
+      <div className="relative pointer-events-none">
         <canvas ref={beforeCanvasRef} className="block w-full h-auto" />
         <canvas
           ref={afterCanvasRef}

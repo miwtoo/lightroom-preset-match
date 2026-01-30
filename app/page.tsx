@@ -130,9 +130,20 @@ export default function Home() {
 
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <label htmlFor="intensity" className="panel-title">
-                  Lift Intensity
-                </label>
+                <div className="flex items-center gap-3">
+                  <label htmlFor="intensity" className="panel-title">
+                    Lift Intensity
+                  </label>
+                  {adjustments && intensity !== 60 && (
+                    <button
+                      type="button"
+                      onClick={() => setIntensity(60)}
+                      className="text-[10px] text-[var(--accent)] hover:underline tracking-widest uppercase"
+                    >
+                      Reset
+                    </button>
+                  )}
+                </div>
                 <span className="text-xs text-[var(--accent)]">{intensity}%</span>
               </div>
               <input
