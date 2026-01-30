@@ -38,3 +38,8 @@
 ## Notes
 
 - No server/API in v1; all processing stays client-side.
+- Image analysis happens during upload to ensure data is ready for the "Generate" button.
+- Use `MAX_WORKING_DIMENSION = 1200` for downscaled bitmaps to avoid iPad Safari tab crashes.
+- Use `{ willReadFrequently: true }` in canvas contexts when extracting pixel data for analysis.
+- Use `window` event listeners for dragging to track cursor movement outside the preview container.
+- Avoid Playwright `getByRole('alert')` directly; use specific text or attributes to avoid Next.js route announcer collisions.
