@@ -43,3 +43,10 @@
 - Use `{ willReadFrequently: true }` in canvas contexts when extracting pixel data for analysis.
 - Use `window` event listeners for dragging to track cursor movement outside the preview container.
 - Avoid Playwright `getByRole('alert')` directly; use specific text or attributes to avoid Next.js route announcer collisions.
+
+## Component Patterns
+
+- Import `HslChannel` type from `lib/preset-generator.ts` - don't redefine the 8 channels locally.
+- Display-only panels (vNext scope) use disabled sliders, not read-only inputs - maintains editor shell aesthetic.
+- ColorMixer shows only channels with values; empty channels are hidden to keep UI clean.
+- Left sidebar panel order: Histogram → Intensity → Basic Tone → RGB Curve → Parametric Curve → Color Mixer.
