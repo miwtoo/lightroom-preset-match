@@ -4,6 +4,7 @@ import type { PresetAdjustments } from './preset-generator'
 describe('generatePresetXMP', () => {
   it('should generate valid XMP with basic adjustments', () => {
     const adjustments: PresetAdjustments = {
+      profile: 'Adobe Color',
       exposure: 0.5,
       contrast: 25,
       highlights: -10,
@@ -39,6 +40,7 @@ describe('generatePresetXMP', () => {
 
   it('should include HSL channels', () => {
     const adjustments: PresetAdjustments = {
+      profile: 'Adobe Color',
       exposure: 0,
       contrast: 0,
       highlights: 0,
@@ -67,6 +69,7 @@ describe('generatePresetXMP', () => {
 
   it('should escape XML special characters in preset name', () => {
     const adjustments: PresetAdjustments = {
+      profile: 'Adobe Color',
       exposure: 0,
       contrast: 0,
       highlights: 0,
@@ -91,6 +94,7 @@ describe('generatePresetXMP', () => {
 
   it('should be deterministic for same input', () => {
     const adjustments: PresetAdjustments = {
+      profile: 'Adobe Color',
       exposure: 0.25,
       contrast: 15,
       highlights: -5,
@@ -116,6 +120,7 @@ describe('generatePresetXMP', () => {
 
   it('should format Exposure with 2 decimal places', () => {
     const adjustments: PresetAdjustments = {
+      profile: 'Adobe Color',
       exposure: 1.2345,
       contrast: 0,
       highlights: 0,
@@ -137,8 +142,33 @@ describe('generatePresetXMP', () => {
     expect(xmp).toContain('crs:Exposure2012="+1.23"')
   })
 
+  it('should include selected color profile', () => {
+    const adjustments: PresetAdjustments = {
+      profile: 'Adobe Portrait',
+      exposure: 0,
+      contrast: 0,
+      highlights: 0,
+      shadows: 0,
+      whites: 0,
+      blacks: 0,
+      hue: {},
+      saturation: {},
+      luminance: {},
+      calibration: {
+        shadowTint: 0,
+        redPrimary: { hue: 0, saturation: 0 },
+        greenPrimary: { hue: 0, saturation: 0 },
+        bluePrimary: { hue: 0, saturation: 0 },
+      },
+    }
+
+    const xmp = generatePresetXMP(adjustments, 'Profile Test')
+    expect(xmp).toContain('crs:LookName="Adobe Portrait"')
+  })
+
   it('should use stable UUID for same content', () => {
     const adjustments: PresetAdjustments = {
+      profile: 'Adobe Color',
       exposure: 0,
       contrast: 0,
       highlights: 0,
@@ -171,6 +201,7 @@ describe('generatePresetXMP', () => {
 describe('generatePresetXMPWithIntensity', () => {
   it('should scale basic adjustments before export', () => {
     const adjustments: PresetAdjustments = {
+      profile: 'Adobe Portrait',
       exposure: 0.4,
       contrast: 20,
       highlights: -10,

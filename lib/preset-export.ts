@@ -101,6 +101,7 @@ export function generatePresetXMP(
    crs:ContactInfo=""
    crs:Version="18.1"
    crs:ProcessVersion="15.4"
+   crs:LookName="${escapeXml(adjustments.profile)}"
    crs:WhiteBalance="Custom"
    crs:IncrementalTemperature="0"
    crs:IncrementalTint="0"

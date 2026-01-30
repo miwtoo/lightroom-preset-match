@@ -74,6 +74,7 @@ describe('generatePresetFromAnalysis', () => {
 
 describe('scaleAdjustments', () => {
   const adjustments: PresetAdjustments = {
+    profile: 'Adobe Color',
     exposure: 50,
     contrast: 30,
     highlights: 20,

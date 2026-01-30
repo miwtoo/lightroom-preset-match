@@ -2,6 +2,18 @@ const HSL_CHANNELS = ['Red', 'Orange', 'Yellow', 'Green', 'Aqua', 'Blue', 'Purpl
 
 export type HslChannel = (typeof HSL_CHANNELS)[number]
 
+export const SUPPORTED_PROFILES = [
+  'Adobe Color',
+  'Adobe Standard',
+  'Adobe Portrait',
+  'Adobe Landscape',
+  'Adobe Vivid',
+  'Adobe Monochrome',
+  'Camera Standard',
+] as const
+
+export type ColorProfile = (typeof SUPPORTED_PROFILES)[number]
+
 export interface CalibrationPrimary {
   hue: number
   saturation: number
@@ -15,6 +27,7 @@ export interface CalibrationAdjustments {
 }
 
 export interface PresetAdjustments {
+  profile: string
   exposure: number
   contrast: number
   highlights: number
@@ -105,6 +118,7 @@ export function generatePresetFromAnalysis(analysis: ImageAnalysis): PresetAdjus
   const saturationAdjustment = Math.round((targetSaturation - averageSaturation) * 100)
 
   return {
+    profile: 'Adobe Color',
     exposure: Math.max(-2, Math.min(2, exposure)),
     contrast: Math.round(contrast),
     highlights: Math.round(Math.max(-40, Math.min(0, (p95 - 200) * -0.5))),
@@ -146,6 +160,7 @@ export function scaleAdjustments(
   const factor = intensity / 100
   return {
     ...adjustments,
+    profile: adjustments.profile,
     exposure: adjustments.exposure * factor,
     contrast: adjustments.contrast * factor,
     highlights: adjustments.highlights * factor,

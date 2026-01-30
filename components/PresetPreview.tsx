@@ -15,6 +15,7 @@ interface PresetPreviewProps {
 }
 
 const EMPTY_ADJUSTMENTS: PresetAdjustments = {
+  profile: 'Adobe Color',
   exposure: 0,
   contrast: 0,
   highlights: 0,

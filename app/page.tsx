@@ -7,10 +7,16 @@ import Histogram from '@/components/Histogram'
 import ColorMixer from '@/components/ColorMixer'
 import Calibration from '@/components/Calibration'
 import { useState, useCallback } from 'react'
-import { generatePresetFromAnalysis, type PresetAdjustments, type ImageAnalysis } from '@/lib/preset-generator'
+import {
+  generatePresetFromAnalysis,
+  type PresetAdjustments,
+  type ImageAnalysis,
+  SUPPORTED_PROFILES,
+} from '@/lib/preset-generator'
 import type { HistogramData } from '@/lib/histogram'
 
 const EMPTY_ADJUSTMENTS: PresetAdjustments = {
+  profile: 'Adobe Color',
   exposure: 0,
   contrast: 0,
   highlights: 0,
@@ -93,6 +99,11 @@ export default function Home() {
   const handleGenerate = () => {
     if (!analysis) return
     setAdjustments(generatePresetFromAnalysis(analysis))
+  }
+
+  const handleProfileChange = (profile: string) => {
+    if (!adjustments) return
+    setAdjustments({ ...adjustments, profile })
   }
 
   const handleClear = () => {
@@ -343,7 +354,29 @@ export default function Home() {
               )}
             </div>
 
-            <div className="panel-inset p-4">
+            <div className="panel-inset p-4 space-y-4">
+              <div className="space-y-3">
+                <label className="panel-title" htmlFor="profile-select">
+                  Color Profile
+                </label>
+                <select
+                  id="profile-select"
+                  className="input-dark w-full px-2 py-2 text-sm bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-sm"
+                  value={adjustments?.profile ?? 'Adobe Color'}
+                  onChange={(e) => handleProfileChange(e.target.value)}
+                  disabled={!adjustments}
+                >
+                  {SUPPORTED_PROFILES.map((profile) => (
+                    <option key={profile} value={profile}>
+                      {profile}
+                    </option>
+                  ))}
+                </select>
+                {!adjustments && (
+                  <p className="text-[10px] text-[var(--muted)]">Generate a preset to change profiles.</p>
+                )}
+              </div>
+
               {adjustments && imageData ? (
                 <PresetExport
                   presetName={presetName}

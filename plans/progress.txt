@@ -250,3 +250,29 @@
 ### Notes for next iteration
 - Implement selectable color profile export (Issue #14)
 - Add deterministic mapping from image stats to calibration adjustments (currently initialized to 0)
+
+## 2026-01-31: Feature: Export with selectable color profile (Issue #14)
+
+### Task completed
+- Defined `SUPPORTED_PROFILES` in `lib/preset-generator.ts` (Adobe Color, Standard, Portrait, Landscape, Vivid, Monochrome, Camera Standard)
+- Added `profile` to `PresetAdjustments` model and ensured it defaults to 'Adobe Color' during generation
+- Updated `lib/preset-export.ts` to include `crs:LookName` in XMP output
+- Added a Profile selector dropdown in the right panel of `app/page.tsx`
+- Updated unit tests in `lib/preset-export.test.ts` and `lib/preset-generator.test.ts` to cover profile field
+- Added `e2e/color-profile.spec.ts` to verify UI selection and XMP content
+- Full gate passes (unit + typecheck + build + E2E)
+
+### Key decisions made
+- Used `crs:LookName` attribute for standard Adobe profiles as it's the most compatible simple way to specify profiles in XMP
+- Defaulted to 'Adobe Color' to match modern Lightroom defaults
+- Profile selection is disabled until a preset is generated to maintain the "Generate first" workflow
+
+### Files changed
+- `lib/preset-generator.ts`
+- `lib/preset-export.ts`
+- `app/page.tsx`
+- `components/PresetPreview.tsx`
+- `lib/preset-export.test.ts`
+- `lib/preset-generator.test.ts`
+- `e2e/color-profile.spec.ts` (created)
+- `plans/progress.txt`
