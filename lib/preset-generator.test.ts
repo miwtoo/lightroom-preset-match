@@ -1,4 +1,22 @@
-import { scaleAdjustments, generatePresetFromAnalysis } from './preset-generator'
+import { scaleAdjustments, generatePresetFromAnalysis, analyzeImage } from './preset-generator'
+
+describe('analyzeImage', () => {
+  it('should compute luminance statistics correctly', () => {
+    const data = new Uint8ClampedArray([
+      0, 0, 0, 255,
+      100, 100, 100, 255,
+      200, 200, 200, 255,
+      255, 255, 255, 255
+    ])
+    const pixels = { data, width: 2, height: 2 } as ImageData
+    const analysis = analyzeImage(pixels)
+
+    expect(analysis.luminance.mean).toBeCloseTo((0 + 100 + 200 + 255) / 4)
+    expect(analysis.zones.length).toBe(11)
+    expect(analysis.zones[0]).toBeGreaterThan(0)
+    expect(analysis.zones[10]).toBeGreaterThan(0)
+  })
+})
 
 describe('generatePresetFromAnalysis', () => {
   it('should increase exposure for dark images', () => {
@@ -12,6 +30,7 @@ describe('generatePresetFromAnalysis', () => {
       color: {
         averageSaturation: 0.3,
       },
+      zones: new Array(11).fill(0),
     }
     const preset = generatePresetFromAnalysis(analysis)
     expect(preset.exposure).toBeGreaterThan(0)
@@ -28,6 +47,7 @@ describe('generatePresetFromAnalysis', () => {
       color: {
         averageSaturation: 0.3,
       },
+      zones: new Array(11).fill(0),
     }
     const preset = generatePresetFromAnalysis(analysis)
     expect(preset.exposure).toBeLessThan(0)
@@ -44,6 +64,7 @@ describe('generatePresetFromAnalysis', () => {
       color: {
         averageSaturation: 0.3,
       },
+      zones: new Array(11).fill(0),
     }
     const preset = generatePresetFromAnalysis(analysis)
     expect(preset.contrast).toBeGreaterThan(0)

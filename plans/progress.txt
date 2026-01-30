@@ -177,6 +177,27 @@
 - `e2e/smoke.spec.ts`
 - `plans/progress.txt`
 
+## 2026-01-30: Feature: Tone zone (Z0–ZX) calculation and display
+
+### Task completed
+- Implemented tone zone distribution calculation (11 zones) in `analyzeImage`
+- Added visual representation of tone distribution in the `TONE_STRIP` component
+- Zones update dynamically when a reference image is processed
+- Added unit test for `analyzeImage` to verify correct luminance and zone calculation
+- Refined basic tone mapping with safer bounds and better dynamic range usage
+- Full gate passes (unit + typecheck + build + E2E)
+
+### Key decisions made
+- Use 11 zones (Z0 to ZX) to match the Lightroom UI mock
+- Visualized zone weight as a translucent bar behind/above the zone color to avoid cluttering the UI
+- Maintained determinism in zone calculation by using the same downsampled analysis path
+
+### Files changed
+- `lib/preset-generator.ts`
+- `lib/preset-generator.test.ts`
+- `app/page.tsx`
+- `plans/progress.txt`
+
 ### Notes for next iteration
-- Implement tone zone (Z0–ZX) calculation and display (Issue #11)
 - Implement HSL Color Mixer panel (Issue #12)
+- Implement Camera Calibration controls (Issue #13)

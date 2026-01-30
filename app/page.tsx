@@ -251,15 +251,24 @@ export default function Home() {
             )}
 
             <div className="grid grid-cols-11 gap-1 text-[10px] uppercase tracking-[0.2em]">
-              {TONE_STRIP.map((tone) => (
-                <div key={tone.label} className="text-center">
-                  <div
-                    className="h-10 rounded-sm border border-[rgba(255,255,255,0.08)]"
-                    style={{ backgroundColor: tone.color }}
-                  />
-                  <span className="text-[9px] text-[var(--muted)]">{tone.label}</span>
-                </div>
-              ))}
+              {TONE_STRIP.map((tone, idx) => {
+                const zoneWeight = analysis?.zones[idx] ?? 0
+                return (
+                  <div key={tone.label} className="text-center group relative">
+                    {zoneWeight > 0 && (
+                      <div
+                        className="absolute bottom-full left-0 right-0 bg-[var(--accent)] opacity-40 transition-all duration-500 rounded-t-sm"
+                        style={{ height: `${Math.min(40, zoneWeight * 2)}px` }}
+                      />
+                    )}
+                    <div
+                      className="h-10 rounded-sm border border-[rgba(255,255,255,0.08)] relative z-10"
+                      style={{ backgroundColor: tone.color }}
+                    />
+                    <span className="text-[9px] text-[var(--muted)]">{tone.label}</span>
+                  </div>
+                )
+              })}
             </div>
 
             {imageData && !adjustments && (

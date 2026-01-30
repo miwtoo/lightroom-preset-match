@@ -24,6 +24,7 @@ export interface ImageAnalysis {
   color: {
     averageSaturation: number
   }
+  zones: number[]
 }
 
 export function analyzeImage(pixels: ImageData): ImageAnalysis {
@@ -31,6 +32,7 @@ export function analyzeImage(pixels: ImageData): ImageAnalysis {
   const pixelCount = data.length / 4
   const lumValues: number[] = []
   let totalSaturation = 0
+  const zones = new Array(11).fill(0)
 
   const sampleEvery = Math.max(1, Math.floor(pixelCount / 10000))
   for (let i = 0; i < pixelCount; i += sampleEvery) {
@@ -39,6 +41,9 @@ export function analyzeImage(pixels: ImageData): ImageAnalysis {
     const b = data[i * 4 + 2]
     const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b
     lumValues.push(luminance)
+
+    const zoneIdx = Math.max(0, Math.min(10, Math.floor(luminance / 23.2)))
+    zones[zoneIdx] += 1
 
     const max = Math.max(r, g, b)
     const min = Math.min(r, g, b)
@@ -52,6 +57,7 @@ export function analyzeImage(pixels: ImageData): ImageAnalysis {
     return {
       luminance: { mean: 128, median: 128, p5: 0, p95: 255 },
       color: { averageSaturation: 0 },
+      zones: new Array(11).fill(0),
     }
   }
 
@@ -67,6 +73,7 @@ export function analyzeImage(pixels: ImageData): ImageAnalysis {
     color: {
       averageSaturation: totalSaturation / count,
     },
+    zones: zones.map((v) => (v / count) * 100),
   }
 }
 
