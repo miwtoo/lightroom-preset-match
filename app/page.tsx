@@ -4,6 +4,7 @@ import ImageUpload, { type ImageData } from '@/components/ImageUpload'
 import PresetPreview from '@/components/PresetPreview'
 import PresetExport from '@/components/PresetExport'
 import Histogram from '@/components/Histogram'
+import ColorMixer from '@/components/ColorMixer'
 import { useState, useCallback } from 'react'
 import { generatePresetFromAnalysis, type PresetAdjustments, type ImageAnalysis } from '@/lib/preset-generator'
 import type { HistogramData } from '@/lib/histogram'
@@ -228,6 +229,12 @@ export default function Home() {
                 ))}
               </div>
             </div>
+
+            <ColorMixer
+              hue={toneAdjustments.hue}
+              saturation={toneAdjustments.saturation}
+              luminance={toneAdjustments.luminance}
+            />
           </div>
         </section>
 

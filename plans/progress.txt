@@ -198,6 +198,27 @@
 - `app/page.tsx`
 - `plans/progress.txt`
 
+## 2026-01-31: Feature: HSL Color Mixer panel (Issue #12)
+
+### Task completed
+- Created `components/ColorMixer.tsx` with display-only HSL panel for 8 color channels
+- Added color indicators (Red, Orange, Yellow, Green, Aqua, Blue, Purple, Magenta)
+- Integrated ColorMixer into left sidebar in `app/page.tsx`
+- Added unit tests for ColorMixer component
+- Full gate passes (14 tests + typecheck + build)
+
+### Key decisions made
+- Display-only (vNext scope) - sliders are disabled, matching the editor shell pattern
+- Shows only channels with values (not all 8 empty channels)
+- Hue/Sat/Lum grid layout (3 columns per channel)
+- Color-coded channel indicators for quick visual recognition
+
+### Files changed
+- `components/ColorMixer.tsx` (created)
+- `components/ColorMixer.test.tsx` (created)
+- `app/page.tsx` (added import and component usage)
+- `plans/progress.txt` (updated)
+
 ### Notes for next iteration
-- Implement HSL Color Mixer panel (Issue #12)
 - Implement Camera Calibration controls (Issue #13)
+- Implement selectable color profile export (Issue #14)
