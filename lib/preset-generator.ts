@@ -52,6 +52,7 @@ export interface ImageAnalysis {
     rgbMean: [number, number, number]
   }
   zones: number[]
+  zoneColors: [number, number, number][]
 }
 
 export function analyzeImage(pixels: ImageData): ImageAnalysis {
@@ -63,6 +64,10 @@ export function analyzeImage(pixels: ImageData): ImageAnalysis {
   let totalG = 0
   let totalB = 0
   const zones = new Array(11).fill(0)
+  const zoneR = new Array(11).fill(0)
+  const zoneG = new Array(11).fill(0)
+  const zoneB = new Array(11).fill(0)
+  const zoneCounts = new Array(11).fill(0)
 
   const sampleEvery = Math.max(1, Math.floor(pixelCount / 10000))
   for (let i = 0; i < pixelCount; i += sampleEvery) {
@@ -77,6 +82,10 @@ export function analyzeImage(pixels: ImageData): ImageAnalysis {
 
     const zoneIdx = Math.max(0, Math.min(10, Math.floor(luminance / 23.2)))
     zones[zoneIdx] += 1
+    zoneR[zoneIdx] += r
+    zoneG[zoneIdx] += g
+    zoneB[zoneIdx] += b
+    zoneCounts[zoneIdx] += 1
 
     const max = Math.max(r, g, b)
     const min = Math.min(r, g, b)
@@ -91,10 +100,23 @@ export function analyzeImage(pixels: ImageData): ImageAnalysis {
       luminance: { mean: 128, median: 128, p5: 0, p95: 255 },
       color: { averageSaturation: 0, rgbMean: [128, 128, 128] },
       zones: new Array(11).fill(0),
+      zoneColors: new Array(11).fill([128, 128, 128]),
     }
   }
 
   lumValues.sort((a, b) => a - b)
+
+  const zoneColors: [number, number, number][] = zoneCounts.map((zoneCount, i) => {
+    if (zoneCount === 0) {
+      const gray = Math.round(i * 25.5)
+      return [gray, gray, gray]
+    }
+    return [
+      Math.round(zoneR[i] / zoneCount),
+      Math.round(zoneG[i] / zoneCount),
+      Math.round(zoneB[i] / zoneCount),
+    ]
+  })
 
   return {
     luminance: {
@@ -108,6 +130,7 @@ export function analyzeImage(pixels: ImageData): ImageAnalysis {
       rgbMean: [totalR / count, totalG / count, totalB / count],
     },
     zones: zones.map((v) => (v / count) * 100),
+    zoneColors,
   }
 }
 

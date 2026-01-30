@@ -280,6 +280,11 @@ export default function Home() {
             <div className="grid grid-cols-11 gap-1 text-[10px] uppercase tracking-[0.2em]">
               {TONE_STRIP.map((tone, idx) => {
                 const zoneWeight = analysis?.zones[idx] ?? 0
+                const dynamicColor = analysis?.zoneColors[idx]
+                const backgroundColor = dynamicColor
+                  ? `rgb(${dynamicColor[0]}, ${dynamicColor[1]}, ${dynamicColor[2]})`
+                  : tone.color
+
                 return (
                   <div key={tone.label} className="text-center group relative">
                     {zoneWeight > 0 && (
@@ -290,7 +295,7 @@ export default function Home() {
                     )}
                     <div
                       className="h-10 rounded-sm border border-[rgba(255,255,255,0.08)] relative z-10"
-                      style={{ backgroundColor: tone.color }}
+                      style={{ backgroundColor }}
                     />
                     <span className="text-[9px] text-[var(--muted)]">{tone.label}</span>
                   </div>

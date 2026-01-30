@@ -15,6 +15,9 @@ describe('analyzeImage', () => {
     expect(analysis.zones.length).toBe(11)
     expect(analysis.zones[0]).toBeGreaterThan(0)
     expect(analysis.zones[10]).toBeGreaterThan(0)
+    expect(analysis.zoneColors.length).toBe(11)
+    expect(analysis.zoneColors[0]).toEqual([0, 0, 0])
+    expect(analysis.zoneColors[10]).toEqual([255, 255, 255])
   })
 })
 
@@ -32,6 +35,7 @@ describe('generatePresetFromAnalysis', () => {
         rgbMean: [60, 50, 40] as [number, number, number],
       },
       zones: new Array(11).fill(0),
+      zoneColors: new Array(11).fill([0, 0, 0]) as [number, number, number][],
     }
     const preset = generatePresetFromAnalysis(analysis)
     expect(preset.exposure).toBeGreaterThan(0)
@@ -51,6 +55,7 @@ describe('generatePresetFromAnalysis', () => {
         rgbMean: [60, 50, 40] as [number, number, number],
       },
       zones: new Array(11).fill(0),
+      zoneColors: new Array(11).fill([0, 0, 0]) as [number, number, number][],
     }
     const preset = generatePresetFromAnalysis(analysis)
     expect(preset.exposure).toBeLessThan(0)
@@ -69,6 +74,7 @@ describe('generatePresetFromAnalysis', () => {
         rgbMean: [60, 50, 40] as [number, number, number],
       },
       zones: new Array(11).fill(0),
+      zoneColors: new Array(11).fill([0, 0, 0]) as [number, number, number][],
     }
     const preset = generatePresetFromAnalysis(analysis)
     expect(preset.contrast).toBeGreaterThan(0)
