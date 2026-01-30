@@ -29,6 +29,7 @@ describe('generatePresetFromAnalysis', () => {
       },
       color: {
         averageSaturation: 0.3,
+        rgbMean: [60, 50, 40] as [number, number, number],
       },
       zones: new Array(11).fill(0),
     }
@@ -47,6 +48,7 @@ describe('generatePresetFromAnalysis', () => {
       },
       color: {
         averageSaturation: 0.3,
+        rgbMean: [60, 50, 40] as [number, number, number],
       },
       zones: new Array(11).fill(0),
     }
@@ -64,6 +66,7 @@ describe('generatePresetFromAnalysis', () => {
       },
       color: {
         averageSaturation: 0.3,
+        rgbMean: [60, 50, 40] as [number, number, number],
       },
       zones: new Array(11).fill(0),
     }

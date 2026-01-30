@@ -49,6 +49,7 @@ export interface ImageAnalysis {
   }
   color: {
     averageSaturation: number
+    rgbMean: [number, number, number]
   }
   zones: number[]
 }
@@ -58,6 +59,9 @@ export function analyzeImage(pixels: ImageData): ImageAnalysis {
   const pixelCount = data.length / 4
   const lumValues: number[] = []
   let totalSaturation = 0
+  let totalR = 0
+  let totalG = 0
+  let totalB = 0
   const zones = new Array(11).fill(0)
 
   const sampleEvery = Math.max(1, Math.floor(pixelCount / 10000))
@@ -65,6 +69,9 @@ export function analyzeImage(pixels: ImageData): ImageAnalysis {
     const r = data[i * 4]
     const g = data[i * 4 + 1]
     const b = data[i * 4 + 2]
+    totalR += r
+    totalG += g
+    totalB += b
     const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b
     lumValues.push(luminance)
 
@@ -82,7 +89,7 @@ export function analyzeImage(pixels: ImageData): ImageAnalysis {
   if (count === 0) {
     return {
       luminance: { mean: 128, median: 128, p5: 0, p95: 255 },
-      color: { averageSaturation: 0 },
+      color: { averageSaturation: 0, rgbMean: [128, 128, 128] },
       zones: new Array(11).fill(0),
     }
   }
@@ -98,6 +105,7 @@ export function analyzeImage(pixels: ImageData): ImageAnalysis {
     },
     color: {
       averageSaturation: totalSaturation / count,
+      rgbMean: [totalR / count, totalG / count, totalB / count],
     },
     zones: zones.map((v) => (v / count) * 100),
   }
@@ -105,7 +113,7 @@ export function analyzeImage(pixels: ImageData): ImageAnalysis {
 
 export function generatePresetFromAnalysis(analysis: ImageAnalysis): PresetAdjustments {
   const { mean, p5, p95 } = analysis.luminance
-  const { averageSaturation } = analysis.color
+  const { averageSaturation, rgbMean } = analysis.color
 
   const targetMiddleGray = 128
   const exposure = (targetMiddleGray - mean) / 128
@@ -132,10 +140,10 @@ export function generatePresetFromAnalysis(analysis: ImageAnalysis): PresetAdjus
     },
     luminance: {},
     calibration: {
-      shadowTint: 0,
-      redPrimary: { hue: 0, saturation: 0 },
-      greenPrimary: { hue: 0, saturation: 0 },
-      bluePrimary: { hue: 0, saturation: 0 },
+      shadowTint: Math.round(Math.max(-10, Math.min(10, (rgbMean[1] - (rgbMean[0] + rgbMean[2]) / 2) * 0.1))),
+      redPrimary: { hue: 0, saturation: Math.round(Math.max(-10, Math.min(10, (rgbMean[0] - mean) * 0.1))) },
+      greenPrimary: { hue: 0, saturation: Math.round(Math.max(-10, Math.min(10, (rgbMean[1] - mean) * 0.1))) },
+      bluePrimary: { hue: 0, saturation: Math.round(Math.max(-10, Math.min(10, (rgbMean[2] - mean) * 0.1))) },
     },
   }
 }

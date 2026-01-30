@@ -249,7 +249,9 @@
 
 ### Notes for next iteration
 - Implement selectable color profile export (Issue #14)
-- Add deterministic mapping from image stats to calibration adjustments (currently initialized to 0)
+- Implemented deterministic mapping from image stats to calibration adjustments (Shadow Tint and RGB Primaries)
+- Added `rgbMean` to `ImageAnalysis` to support color-aware calibration generation
+- Full gate passes (unit + typecheck + build + E2E)
 
 ## 2026-01-31: Feature: Export with selectable color profile (Issue #14)
 
