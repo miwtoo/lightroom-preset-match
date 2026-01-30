@@ -112,6 +112,24 @@
 - `app/globals.css`
 - `plans/progress.txt`
 
+## 2026-01-30: Feature: Improved upload pipeline with early downscaling
+
+### Task completed
+- Implemented early downscaling in `ImageUpload` (MAX 1200px) to prevent memory pressure on iPad Safari
+- Switched to `URL.createObjectURL` for safer and faster image loading
+- Added explicit file type validation and descriptive error messages
+- Improved accessibility with `aria-label` and `role="alert"` for error states
+- Added E2E test for invalid file types
+- Full gate passes (unit + typecheck + build + E2E)
+
+### Key decisions made
+- Set `MAX_WORKING_DIMENSION` to 1200px as a safe balance between analysis detail and memory usage
+- Revoke object URLs immediately after processing to prevent memory leaks
+
+### Files changed
+- `components/ImageUpload.tsx`
+- `e2e/editor-shell.spec.ts`
+- `plans/progress.txt`
+
 ### Notes for next iteration
 - Start on core generation pipeline (Issue #3) - mapping image stats to real adjustments
-- Improve `ImageUpload` with early downscaling (Issue #2)

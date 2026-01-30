@@ -55,3 +55,23 @@ test('editor shell: upload reveals file info and preview', async ({ page }) => {
     await expect(page.getByText('image/png')).toBeVisible()
   })
 })
+
+test('editor shell: invalid file type shows error', async ({ page }) => {
+  await test.step('Given the home page is loaded', async () => {
+    await page.goto('/')
+  })
+
+  await test.step('When a text file is uploaded instead of an image', async () => {
+    await page.getByLabel('Upload image').setInputFiles({
+      name: 'test.txt',
+      mimeType: 'text/plain',
+      buffer: Buffer.from('hello world'),
+    })
+  })
+
+  await test.step('Then an error message is visible', async () => {
+    const errorMsg = page.getByText('Unsupported file type')
+    await expect(errorMsg).toBeVisible()
+    await expect(errorMsg).toHaveAttribute('role', 'alert')
+  })
+})
