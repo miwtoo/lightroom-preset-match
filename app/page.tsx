@@ -4,8 +4,8 @@ import ImageUpload, { type ImageData } from '@/components/ImageUpload'
 import PresetPreview from '@/components/PresetPreview'
 import PresetExport from '@/components/PresetExport'
 import Histogram from '@/components/Histogram'
-import { useState } from 'react'
-import type { PresetAdjustments } from '@/lib/preset-generator'
+import { useState, useCallback } from 'react'
+import { generatePresetFromAnalysis, type PresetAdjustments, type ImageAnalysis } from '@/lib/preset-generator'
 import type { HistogramData } from '@/lib/histogram'
 
 const EMPTY_ADJUSTMENTS: PresetAdjustments = {
@@ -18,18 +18,6 @@ const EMPTY_ADJUSTMENTS: PresetAdjustments = {
   hue: {},
   saturation: {},
   luminance: {},
-}
-
-const DEMO_ADJUSTMENTS: PresetAdjustments = {
-  exposure: 0.4,
-  contrast: 20,
-  highlights: -12,
-  shadows: 10,
-  whites: 14,
-  blacks: -8,
-  hue: { Red: 6 },
-  saturation: { Orange: -4 },
-  luminance: { Blue: 10 },
 }
 
 const BASIC_TONE_FIELDS = [
@@ -70,26 +58,33 @@ export default function Home() {
   const [adjustments, setAdjustments] = useState<PresetAdjustments | null>(null)
   const [intensity, setIntensity] = useState(60)
   const [presetName, setPresetName] = useState('')
-  const [isGenerating, setIsGenerating] = useState(false)
   const [uploadError, setUploadError] = useState('')
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [analysis, setAnalysis] = useState<ImageAnalysis | null>(null)
   const [histogramBefore, setHistogramBefore] = useState<HistogramData | null>(null)
   const [histogramAfter, setHistogramAfter] = useState<HistogramData | null>(null)
+
+  const handleHistogramUpdate = useCallback((histogram: HistogramData, target: 'before' | 'after') => {
+    if (target === 'before') {
+      setHistogramBefore(histogram)
+    } else {
+      setHistogramAfter(histogram)
+    }
+  }, [])
 
   const handleImageUpload = (data: ImageData) => {
     setImageData(data)
     setAdjustments(null)
     setUploadError('')
+    setAnalysis(data.analysis)
     setHistogramBefore(null)
     setHistogramAfter(null)
+    setIsProcessing(false)
   }
 
   const handleGenerate = () => {
-    if (!imageData) return
-    setIsGenerating(true)
-    setTimeout(() => {
-      setAdjustments(DEMO_ADJUSTMENTS)
-      setIsGenerating(false)
-    }, 1000)
+    if (!analysis) return
+    setAdjustments(generatePresetFromAnalysis(analysis))
   }
 
   const handleClear = () => {
@@ -98,6 +93,7 @@ export default function Home() {
     setIntensity(60)
     setPresetName('')
     setUploadError('')
+    setAnalysis(null)
     setHistogramBefore(null)
     setHistogramAfter(null)
   }
@@ -235,13 +231,7 @@ export default function Home() {
                 imageData={imageData}
                 adjustments={adjustments}
                 intensity={intensity}
-                onHistogramUpdate={(histogram, target) => {
-                  if (target === 'before') {
-                    setHistogramBefore(histogram)
-                  } else {
-                    setHistogramAfter(histogram)
-                  }
-                }}
+                onHistogramUpdate={handleHistogramUpdate}
               />
             ) : (
               <div className="panel-inset p-6 text-center text-sm text-[var(--muted)]">
@@ -265,10 +255,12 @@ export default function Home() {
               <button
                 type="button"
                 onClick={handleGenerate}
-                disabled={isGenerating}
+                disabled={!analysis}
                 className="button-cta w-full py-3 text-xs tracking-[0.3em]"
+                data-testid="generate-preset"
+                data-analysis-ready={!!analysis}
               >
-                {isGenerating ? 'Generating...' : 'Generate Preset'}
+                Generate Preset
               </button>
             )}
           </div>
@@ -302,7 +294,11 @@ export default function Home() {
                 <ImageUpload
                   onImageUpload={handleImageUpload}
                   onError={(error) => setUploadError(error)}
+                  onProcessingChange={setIsProcessing}
                 />
+              )}
+              {isProcessing && (
+                <p className="text-xs text-[var(--muted)] animate-pulse">Processing image...</p>
               )}
               {uploadError && (
                 <p className="text-xs text-red-400" role="alert">

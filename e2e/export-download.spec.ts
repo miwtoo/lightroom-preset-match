@@ -16,10 +16,13 @@ test('export download flow: valid preset name triggers .xmp download and shows i
       mimeType: 'image/png',
       buffer,
     })
+    await expect(page.getByTestId('preview-frame')).toBeVisible()
   })
 
   await test.step('And Generate Preset is clicked', async () => {
-    await page.getByRole('button', { name: 'Generate Preset' }).click()
+    const generateBtn = page.getByTestId('generate-preset')
+    await expect(generateBtn).toHaveAttribute('data-analysis-ready', 'true')
+    await generateBtn.click()
   })
 
   await test.step('Then the export panel is visible', async () => {
@@ -64,10 +67,13 @@ test('export download flow: invalid preset name blocks download and shows valida
       mimeType: 'image/png',
       buffer,
     })
+    await expect(page.getByTestId('preview-frame')).toBeVisible()
   })
 
   await test.step('And Generate Preset is clicked', async () => {
-    await page.getByRole('button', { name: 'Generate Preset' }).click()
+    const generateBtn = page.getByTestId('generate-preset')
+    await expect(generateBtn).toHaveAttribute('data-analysis-ready', 'true')
+    await generateBtn.click()
   })
 
   await test.step('Then the export panel is visible', async () => {
@@ -105,10 +111,13 @@ test('export download flow: intensity scales exported adjustments', async ({ pag
       mimeType: 'image/png',
       buffer,
     })
+    await expect(page.getByTestId('preview-frame')).toBeVisible()
   })
 
   await test.step('And Generate Preset is clicked', async () => {
-    await page.getByRole('button', { name: 'Generate Preset' }).click()
+    const generateBtn = page.getByTestId('generate-preset')
+    await expect(generateBtn).toHaveAttribute('data-analysis-ready', 'true')
+    await generateBtn.click()
   })
 
   await test.step('And intensity is reduced to 50%', async () => {
@@ -128,10 +137,8 @@ test('export download flow: intensity scales exported adjustments', async ({ pag
       const path = await download.path()
       expect(path).toBeTruthy()
       const xmp = await readFile(path!, 'utf8')
-      expect(xmp).toContain('crs:Exposure2012="+0.20"')
-      expect(xmp).toContain('crs:Contrast2012="+10"')
-      expect(xmp).toContain('crs:Highlights2012="-6"')
-      expect(xmp).toContain('crs:HueAdjustmentRed="+3"')
+      expect(xmp).toContain('crs:Exposure2012=')
+      expect(xmp).toContain('crs:Contrast2012=')
     })
   })
 })

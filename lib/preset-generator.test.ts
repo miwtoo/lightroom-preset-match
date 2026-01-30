@@ -1,4 +1,54 @@
-import { scaleAdjustments } from './preset-generator'
+import { scaleAdjustments, generatePresetFromAnalysis } from './preset-generator'
+
+describe('generatePresetFromAnalysis', () => {
+  it('should increase exposure for dark images', () => {
+    const analysis = {
+      luminance: {
+        mean: 50,
+        median: 45,
+        p5: 10,
+        p95: 100,
+      },
+      color: {
+        averageSaturation: 0.3,
+      },
+    }
+    const preset = generatePresetFromAnalysis(analysis)
+    expect(preset.exposure).toBeGreaterThan(0)
+  })
+
+  it('should decrease exposure for bright images', () => {
+    const analysis = {
+      luminance: {
+        mean: 200,
+        median: 210,
+        p5: 150,
+        p95: 250,
+      },
+      color: {
+        averageSaturation: 0.3,
+      },
+    }
+    const preset = generatePresetFromAnalysis(analysis)
+    expect(preset.exposure).toBeLessThan(0)
+  })
+
+  it('should increase contrast for low dynamic range images', () => {
+    const analysis = {
+      luminance: {
+        mean: 128,
+        median: 128,
+        p5: 100,
+        p95: 150,
+      },
+      color: {
+        averageSaturation: 0.3,
+      },
+    }
+    const preset = generatePresetFromAnalysis(analysis)
+    expect(preset.contrast).toBeGreaterThan(0)
+  })
+})
 
 describe('scaleAdjustments', () => {
   it('should scale adjustments by intensity factor', () => {

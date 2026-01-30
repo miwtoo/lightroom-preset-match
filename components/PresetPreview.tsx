@@ -1,13 +1,14 @@
 'use client'
 
 import { useEffect, useRef, useState, useCallback } from 'react'
-import type { PresetAdjustments } from '@/lib/preset-generator'
-import type { ImageData } from '@/components/ImageUpload'
+import type { PresetAdjustments, ImageAnalysis } from '@/lib/preset-generator'
+import { analyzeImage } from '@/lib/preset-generator'
+import type { ImageData as UploadImageData } from '@/components/ImageUpload'
 import { computeHistogram } from '@/lib/histogram'
 import type { HistogramData } from '@/lib/histogram'
 
 interface PresetPreviewProps {
-  imageData: ImageData
+  imageData: UploadImageData
   adjustments?: PresetAdjustments | null
   intensity: number
   onHistogramUpdate?: (histogram: HistogramData, target: 'before' | 'after') => void
@@ -84,17 +85,24 @@ export default function PresetPreview({
   useEffect(() => {
     const img = new Image()
     img.onload = () => {
-      if (beforeCanvasRef.current) {
-        const ctx = beforeCanvasRef.current.getContext('2d')
-        if (ctx) {
-          beforeCanvasRef.current.width = img.width
-          beforeCanvasRef.current.height = img.height
-          ctx.drawImage(img, 0, 0)
+      try {
+        if (beforeCanvasRef.current) {
+          const ctx = beforeCanvasRef.current.getContext('2d', { willReadFrequently: true })
+          if (ctx) {
+            beforeCanvasRef.current.width = img.width
+            beforeCanvasRef.current.height = img.height
+            ctx.drawImage(img, 0, 0)
 
-          const pixels = ctx.getImageData(0, 0, img.width, img.height)
-          onHistogramUpdate?.(computeHistogram(pixels), 'before')
+            const pixels = ctx.getImageData(0, 0, img.width, img.height)
+            onHistogramUpdate?.(computeHistogram(pixels), 'before')
+          }
         }
+      } catch (err) {
+        console.error('Analysis failed', err)
       }
+    }
+    img.onerror = (err) => {
+      console.error('Image load failed in PresetPreview', err)
     }
     img.src = imageData.src
   }, [imageData.src, onHistogramUpdate])
@@ -145,6 +153,7 @@ export default function PresetPreview({
       aria-label="Before and after preview"
       onMouseDown={handleMouseDown}
       onTouchStart={handleTouchStart}
+      data-testid="preview-frame"
     >
       <div className="relative pointer-events-none">
         <canvas ref={beforeCanvasRef} className="block w-full h-auto" />

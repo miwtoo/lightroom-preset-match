@@ -1,55 +1,64 @@
 'use client'
 
 import { useRef, useState } from 'react'
+import { analyzeImage, type ImageAnalysis } from '@/lib/preset-generator'
 
 interface ImageData {
   src: string
   file: File
   width: number
   height: number
+  analysis: ImageAnalysis
 }
 
 interface ImageUploadProps {
   onImageUpload: (data: ImageData) => void
   onError: (error: string) => void
+  onProcessingChange?: (isProcessing: boolean) => void
 }
 
 export type { ImageData }
 
 const MAX_WORKING_DIMENSION = 1200
 
-function downscaleImage(img: HTMLImageElement): { src: string; width: number; height: number } {
+function processImage(img: HTMLImageElement): { src: string; width: number; height: number; analysis: ImageAnalysis } {
   let { width, height } = img
-  if (width <= MAX_WORKING_DIMENSION && height <= MAX_WORKING_DIMENSION) {
-    return { src: img.src, width, height }
-  }
+  let src = img.src
 
-  if (width > height) {
-    height = Math.round((height / width) * MAX_WORKING_DIMENSION)
-    width = MAX_WORKING_DIMENSION
-  } else {
-    width = Math.round((width / height) * MAX_WORKING_DIMENSION)
-    height = MAX_WORKING_DIMENSION
+  const needsDownscale = width > MAX_WORKING_DIMENSION || height > MAX_WORKING_DIMENSION
+
+  if (needsDownscale) {
+    if (width > height) {
+      height = Math.round((height / width) * MAX_WORKING_DIMENSION)
+      width = MAX_WORKING_DIMENSION
+    } else {
+      width = Math.round((width / height) * MAX_WORKING_DIMENSION)
+      height = MAX_WORKING_DIMENSION
+    }
   }
 
   const canvas = document.createElement('canvas')
   canvas.width = width
   canvas.height = height
-  const ctx = canvas.getContext('2d')
-  if (!ctx) return { src: img.src, width: img.width, height: img.height }
+  const ctx = canvas.getContext('2d', { willReadFrequently: true })
+  if (!ctx) throw new Error('Could not get canvas context')
 
-  ctx.imageSmoothingEnabled = true
-  ctx.imageSmoothingQuality = 'high'
-  ctx.drawImage(img, 0, 0, width, height)
-
-  return {
-    src: canvas.toDataURL('image/jpeg', 0.85),
-    width,
-    height,
+  if (needsDownscale) {
+    ctx.imageSmoothingEnabled = true
+    ctx.imageSmoothingQuality = 'high'
+    ctx.drawImage(img, 0, 0, width, height)
+    src = canvas.toDataURL('image/jpeg', 0.85)
+  } else {
+    ctx.drawImage(img, 0, 0)
   }
+
+  const pixels = ctx.getImageData(0, 0, width, height)
+  const analysis = analyzeImage(pixels)
+
+  return { src, width, height, analysis }
 }
 
-export default function ImageUpload({ onImageUpload, onError }: ImageUploadProps) {
+export default function ImageUpload({ onImageUpload, onError, onProcessingChange }: ImageUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [isDragging, setIsDragging] = useState(false)
 
@@ -59,20 +68,20 @@ export default function ImageUpload({ onImageUpload, onError }: ImageUploadProps
       return
     }
 
+    onProcessingChange?.(true)
     const objectUrl = URL.createObjectURL(file)
     const img = new Image()
 
     img.onload = () => {
       try {
-        const { src, width, height } = downscaleImage(img)
+        const result = processImage(img)
         onImageUpload({
-          src,
+          ...result,
           file,
-          width,
-          height,
         })
       } catch (err) {
         onError('Failed to process image. It might be too large or corrupt.')
+        onProcessingChange?.(false)
       } finally {
         URL.revokeObjectURL(objectUrl)
       }
@@ -80,6 +89,7 @@ export default function ImageUpload({ onImageUpload, onError }: ImageUploadProps
 
     img.onerror = () => {
       onError('Failed to load image. The file might be corrupt.')
+      onProcessingChange?.(false)
       URL.revokeObjectURL(objectUrl)
     }
 
