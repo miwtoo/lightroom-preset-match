@@ -109,8 +109,15 @@ export function generatePresetXMP(
    crs:Highlights2012="${formatSignedInt(adjustments.highlights)}"
    crs:Shadows2012="${formatSignedInt(adjustments.shadows)}"
    crs:Whites2012="${formatSignedInt(adjustments.whites)}"
-   crs:Blacks2012="${formatSignedInt(adjustments.blacks)}"
-   ${HSL_CHANNELS.map(formatHue).join('\n    ')}
+    crs:Blacks2012="${formatSignedInt(adjustments.blacks)}"
+    crs:ShadowTint="${formatSignedInt(adjustments.calibration.shadowTint)}"
+    crs:RedHue="${formatSignedInt(adjustments.calibration.redPrimary.hue)}"
+    crs:RedSaturation="${formatSignedInt(adjustments.calibration.redPrimary.saturation)}"
+    crs:GreenHue="${formatSignedInt(adjustments.calibration.greenPrimary.hue)}"
+    crs:GreenSaturation="${formatSignedInt(adjustments.calibration.greenPrimary.saturation)}"
+    crs:BlueHue="${formatSignedInt(adjustments.calibration.bluePrimary.hue)}"
+    crs:BlueSaturation="${formatSignedInt(adjustments.calibration.bluePrimary.saturation)}"
+    ${HSL_CHANNELS.map(formatHue).join('\n    ')}
    ${HSL_CHANNELS.map(formatSat).join('\n    ')}
    ${HSL_CHANNELS.map(formatLum).join('\n    ')}>
    <crs:Name>

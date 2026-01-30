@@ -2,6 +2,18 @@ const HSL_CHANNELS = ['Red', 'Orange', 'Yellow', 'Green', 'Aqua', 'Blue', 'Purpl
 
 export type HslChannel = (typeof HSL_CHANNELS)[number]
 
+export interface CalibrationPrimary {
+  hue: number
+  saturation: number
+}
+
+export interface CalibrationAdjustments {
+  shadowTint: number
+  redPrimary: CalibrationPrimary
+  greenPrimary: CalibrationPrimary
+  bluePrimary: CalibrationPrimary
+}
+
 export interface PresetAdjustments {
   exposure: number
   contrast: number
@@ -12,6 +24,7 @@ export interface PresetAdjustments {
   hue: Partial<Record<HslChannel, number>>
   saturation: Partial<Record<HslChannel, number>>
   luminance: Partial<Record<HslChannel, number>>
+  calibration: CalibrationAdjustments
 }
 
 export interface ImageAnalysis {
@@ -104,6 +117,12 @@ export function generatePresetFromAnalysis(analysis: ImageAnalysis): PresetAdjus
       Blue: Math.max(-20, Math.min(20, saturationAdjustment)),
     },
     luminance: {},
+    calibration: {
+      shadowTint: 0,
+      redPrimary: { hue: 0, saturation: 0 },
+      greenPrimary: { hue: 0, saturation: 0 },
+      bluePrimary: { hue: 0, saturation: 0 },
+    },
   }
 }
 
@@ -136,5 +155,20 @@ export function scaleAdjustments(
     hue: scaleMap(adjustments.hue, factor),
     saturation: scaleMap(adjustments.saturation, factor),
     luminance: scaleMap(adjustments.luminance, factor),
+    calibration: {
+      shadowTint: adjustments.calibration.shadowTint * factor,
+      redPrimary: {
+        hue: adjustments.calibration.redPrimary.hue * factor,
+        saturation: adjustments.calibration.redPrimary.saturation * factor,
+      },
+      greenPrimary: {
+        hue: adjustments.calibration.greenPrimary.hue * factor,
+        saturation: adjustments.calibration.greenPrimary.saturation * factor,
+      },
+      bluePrimary: {
+        hue: adjustments.calibration.bluePrimary.hue * factor,
+        saturation: adjustments.calibration.bluePrimary.saturation * factor,
+      },
+    },
   }
 }

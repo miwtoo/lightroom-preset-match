@@ -1,4 +1,4 @@
-import { scaleAdjustments, generatePresetFromAnalysis, analyzeImage } from './preset-generator'
+import { scaleAdjustments, generatePresetFromAnalysis, analyzeImage, type PresetAdjustments } from './preset-generator'
 
 describe('analyzeImage', () => {
   it('should compute luminance statistics correctly', () => {
@@ -34,6 +34,7 @@ describe('generatePresetFromAnalysis', () => {
     }
     const preset = generatePresetFromAnalysis(analysis)
     expect(preset.exposure).toBeGreaterThan(0)
+    expect(preset.calibration).toBeDefined()
   })
 
   it('should decrease exposure for bright images', () => {
@@ -72,61 +73,48 @@ describe('generatePresetFromAnalysis', () => {
 })
 
 describe('scaleAdjustments', () => {
-  it('should scale adjustments by intensity factor', () => {
-    const adjustments = {
-      exposure: 50,
-      contrast: 30,
-      highlights: 20,
-      shadows: 10,
-      whites: 15,
-      blacks: 5,
-      hue: {},
-      saturation: {},
-      luminance: {},
-    }
+  const adjustments: PresetAdjustments = {
+    exposure: 50,
+    contrast: 30,
+    highlights: 20,
+    shadows: 10,
+    whites: 15,
+    blacks: 5,
+    hue: {},
+    saturation: {},
+    luminance: {},
+    calibration: {
+      shadowTint: 10,
+      redPrimary: { hue: 20, saturation: 30 },
+      greenPrimary: { hue: 0, saturation: 0 },
+      bluePrimary: { hue: 0, saturation: 0 },
+    },
+  }
 
+  it('should scale adjustments by intensity factor', () => {
     const scaled = scaleAdjustments(adjustments, 50)
 
     expect(scaled.exposure).toBe(25)
     expect(scaled.contrast).toBe(15)
     expect(scaled.highlights).toBe(10)
+    expect(scaled.calibration.shadowTint).toBe(5)
+    expect(scaled.calibration.redPrimary.hue).toBe(10)
+    expect(scaled.calibration.redPrimary.saturation).toBe(15)
   })
 
   it('should return zero when intensity is 0', () => {
-    const adjustments = {
-      exposure: 50,
-      contrast: 30,
-      highlights: 20,
-      shadows: 10,
-      whites: 15,
-      blacks: 5,
-      hue: {},
-      saturation: {},
-      luminance: {},
-    }
-
     const scaled = scaleAdjustments(adjustments, 0)
 
     expect(scaled.exposure).toBe(0)
     expect(scaled.contrast).toBe(0)
+    expect(scaled.calibration.shadowTint).toBe(0)
   })
 
   it('should return original when intensity is 100', () => {
-    const adjustments = {
-      exposure: 50,
-      contrast: 30,
-      highlights: 20,
-      shadows: 10,
-      whites: 15,
-      blacks: 5,
-      hue: {},
-      saturation: {},
-      luminance: {},
-    }
-
     const scaled = scaleAdjustments(adjustments, 100)
 
     expect(scaled.exposure).toBe(50)
     expect(scaled.contrast).toBe(30)
+    expect(scaled.calibration.shadowTint).toBe(10)
   })
 })

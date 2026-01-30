@@ -219,6 +219,34 @@
 - `app/page.tsx` (added import and component usage)
 - `plans/progress.txt` (updated)
 
+## 2026-01-31: Feature: Camera Calibration controls (Issue #13)
+
+### Task completed
+- Defined `CalibrationAdjustments` model in `lib/preset-generator.ts`
+- Added Calibration scaling logic to `scaleAdjustments`
+- Created `components/Calibration.tsx` display-only panel for Shadow Tint and RGB Primaries
+- Updated `lib/preset-export.ts` to include Calibration tags in XMP output
+- Integrated Calibration panel into sidebar in `app/page.tsx`
+- Updated unit tests in `lib/preset-generator.test.ts` and `lib/preset-export.test.ts`
+- Updated `components/PresetPreview.tsx` to include `calibration` in `EMPTY_ADJUSTMENTS`
+- Full gate passes (unit + typecheck + build)
+
+### Key decisions made
+- Followed "display-only" pattern for v1 panels (disabled sliders)
+- Added color-coded primary indicators (Red, Green, Blue) for visual clarity
+- Included all 7 calibration parameters in XMP export: `ShadowTint`, `RedHue`/`RedSaturation`, `GreenHue`/`GreenSaturation`, `BlueHue`/`BlueSaturation`
+- Derived tags from project reference files and GitHub reference searches
+
+### Files changed
+- `lib/preset-generator.ts`
+- `lib/preset-export.ts`
+- `components/Calibration.tsx` (created)
+- `app/page.tsx`
+- `components/PresetPreview.tsx`
+- `lib/preset-generator.test.ts`
+- `lib/preset-export.test.ts`
+- `plans/progress.txt`
+
 ### Notes for next iteration
-- Implement Camera Calibration controls (Issue #13)
 - Implement selectable color profile export (Issue #14)
+- Add deterministic mapping from image stats to calibration adjustments (currently initialized to 0)

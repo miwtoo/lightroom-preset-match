@@ -13,6 +13,12 @@ describe('generatePresetXMP', () => {
       hue: {},
       saturation: {},
       luminance: {},
+      calibration: {
+        shadowTint: 0,
+        redPrimary: { hue: 0, saturation: 0 },
+        greenPrimary: { hue: 0, saturation: 0 },
+        bluePrimary: { hue: 0, saturation: 0 },
+      },
     }
 
     const xmp = generatePresetXMP(adjustments, 'Test Preset')
@@ -42,6 +48,12 @@ describe('generatePresetXMP', () => {
       hue: { Red: 10, Orange: -5, Yellow: 0 },
       saturation: { Green: 20 },
       luminance: { Blue: -15 },
+      calibration: {
+        shadowTint: 0,
+        redPrimary: { hue: 0, saturation: 0 },
+        greenPrimary: { hue: 0, saturation: 0 },
+        bluePrimary: { hue: 0, saturation: 0 },
+      },
     }
 
     const xmp = generatePresetXMP(adjustments, 'Test')
@@ -64,6 +76,12 @@ describe('generatePresetXMP', () => {
       hue: {},
       saturation: {},
       luminance: {},
+      calibration: {
+        shadowTint: 0,
+        redPrimary: { hue: 0, saturation: 0 },
+        greenPrimary: { hue: 0, saturation: 0 },
+        bluePrimary: { hue: 0, saturation: 0 },
+      },
     }
 
     const xmp = generatePresetXMP(adjustments, 'Test & <Presets> "Demo"')
@@ -82,6 +100,12 @@ describe('generatePresetXMP', () => {
       hue: { Red: 5 },
       saturation: {},
       luminance: {},
+      calibration: {
+        shadowTint: 0,
+        redPrimary: { hue: 0, saturation: 0 },
+        greenPrimary: { hue: 0, saturation: 0 },
+        bluePrimary: { hue: 0, saturation: 0 },
+      },
     }
 
     const xmp1 = generatePresetXMP(adjustments, 'Deterministic Test')
@@ -101,6 +125,12 @@ describe('generatePresetXMP', () => {
       hue: {},
       saturation: {},
       luminance: {},
+      calibration: {
+        shadowTint: 0,
+        redPrimary: { hue: 0, saturation: 0 },
+        greenPrimary: { hue: 0, saturation: 0 },
+        bluePrimary: { hue: 0, saturation: 0 },
+      },
     }
 
     const xmp = generatePresetXMP(adjustments, 'Test')
@@ -118,6 +148,12 @@ describe('generatePresetXMP', () => {
       hue: {},
       saturation: {},
       luminance: {},
+      calibration: {
+        shadowTint: 0,
+        redPrimary: { hue: 0, saturation: 0 },
+        greenPrimary: { hue: 0, saturation: 0 },
+        bluePrimary: { hue: 0, saturation: 0 },
+      },
     }
 
     const xmp1 = generatePresetXMP(adjustments, 'Same Name')
@@ -144,6 +180,12 @@ describe('generatePresetXMPWithIntensity', () => {
       hue: { Red: 6 },
       saturation: { Orange: -4 },
       luminance: { Blue: 10 },
+      calibration: {
+        shadowTint: 10,
+        redPrimary: { hue: 20, saturation: 30 },
+        greenPrimary: { hue: 0, saturation: 0 },
+        bluePrimary: { hue: 0, saturation: 0 },
+      },
     }
 
     const xmp = generatePresetXMPWithIntensity(adjustments, 'Scaled', 50)

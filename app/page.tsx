@@ -5,6 +5,7 @@ import PresetPreview from '@/components/PresetPreview'
 import PresetExport from '@/components/PresetExport'
 import Histogram from '@/components/Histogram'
 import ColorMixer from '@/components/ColorMixer'
+import Calibration from '@/components/Calibration'
 import { useState, useCallback } from 'react'
 import { generatePresetFromAnalysis, type PresetAdjustments, type ImageAnalysis } from '@/lib/preset-generator'
 import type { HistogramData } from '@/lib/histogram'
@@ -19,6 +20,12 @@ const EMPTY_ADJUSTMENTS: PresetAdjustments = {
   hue: {},
   saturation: {},
   luminance: {},
+  calibration: {
+    shadowTint: 0,
+    redPrimary: { hue: 0, saturation: 0 },
+    greenPrimary: { hue: 0, saturation: 0 },
+    bluePrimary: { hue: 0, saturation: 0 },
+  },
 }
 
 const BASIC_TONE_FIELDS = [
@@ -235,6 +242,8 @@ export default function Home() {
               saturation={toneAdjustments.saturation}
               luminance={toneAdjustments.luminance}
             />
+
+            <Calibration calibration={toneAdjustments.calibration} />
           </div>
         </section>
 

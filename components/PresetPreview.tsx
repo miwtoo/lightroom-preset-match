@@ -24,6 +24,12 @@ const EMPTY_ADJUSTMENTS: PresetAdjustments = {
   hue: {},
   saturation: {},
   luminance: {},
+  calibration: {
+    shadowTint: 0,
+    redPrimary: { hue: 0, saturation: 0 },
+    greenPrimary: { hue: 0, saturation: 0 },
+    bluePrimary: { hue: 0, saturation: 0 },
+  },
 }
 
 export default function PresetPreview({
